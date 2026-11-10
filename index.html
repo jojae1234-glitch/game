@@ -89,6 +89,10 @@
                     <span>내 프로필 & 친구</span>
                     <span id="nav-request-dot" class="hidden absolute top-1 right-1 w-2.5 h-2.5 rounded-full bg-red-500 ring-2 ring-white"></span>
                 </button>
+                <button onclick="openApiKeyModal()" title="외부 웹사이트 연동을 위한 API Key 설정" class="px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200">
+                    <i class="fa-solid fa-key text-amber-500"></i>
+                    <span class="hidden sm:inline">API 키</span>
+                </button>
             </nav>
         </div>
     </header>
@@ -172,34 +176,38 @@
                     <h2 class="text-2xl font-black text-slate-900 flex items-center gap-2">
                         <i class="fa-solid fa-wand-magic-sparkles text-blue-600"></i> 큐브 AI 게임 스튜디오
                     </h2>
-                    <p class="text-slate-600 text-xs sm:text-sm mt-0.5">상상하는 게임 아이디어를 적으면 AI가 디테일을 보강하여 작동 가능한 게임으로 만들어줍니다.</p>
+                    <p class="text-slate-600 text-xs sm:text-sm mt-0.5">하나의 대화창으로 게임을 처음 만들고, 대화하며 실시간으로 자유롭게 수정하세요!</p>
                 </div>
-                <button onclick="resetStudio()" class="px-3 py-1.5 rounded-lg border border-slate-300 bg-white text-slate-700 hover:bg-slate-100 text-xs font-semibold flex items-center gap-1.5 transition">
-                    <i class="fa-solid fa-rotate-right text-red-500"></i> 새로 시작
-                </button>
             </div>
 
             <!-- Studio Main Grid Layout -->
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                <!-- Left Column: Step 1 -->
-                <div class="lg:col-span-5 space-y-5 flex flex-col">
-                    <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4">
-                        <div class="flex items-center justify-between">
-                            <label class="text-xs font-extrabold uppercase tracking-wider text-blue-600 flex items-center gap-1.5">
-                                <i class="fa-solid fa-lightbulb text-yellow-500"></i> Step 1. 게임 아이디어 입력
-                            </label>
+                <!-- Left Column: Unified Studio Chat & Input Area -->
+                <div class="lg:col-span-5 space-y-4 flex flex-col h-[560px]">
+                    <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm flex-1 flex flex-col justify-between overflow-hidden">
+                        
+                        <!-- Chat Header & Enrichment -->
+                        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                            <span class="text-xs font-extrabold text-blue-600 flex items-center gap-1.5">
+                                <i class="fa-solid fa-comments text-amber-500"></i> AI 게임 대화 및 요청
+                            </span>
                             <button id="btn-enrich" onclick="enrichPrompt()" class="text-[11px] font-bold text-blue-700 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 border border-blue-200 px-2.5 py-1 rounded-md transition flex items-center gap-1">
-                                <i class="fa-solid fa-brain text-red-500"></i> AI 디테일 풍부하게 만들기
+                                <i class="fa-solid fa-brain text-red-500"></i> 아이디어 디테일 풍부하게
                             </button>
                         </div>
 
-                        <div>
-                            <textarea id="prompt-input" rows="6" placeholder="예: 우주에서 소행성을 피하며 레이저를 쏘는 2D 아케이드 게임. 파워업 아이템과 점수 시스템이 포함되게 해줘." class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:bg-white transition resize-none"></textarea>
+                        <!-- Unified Chat History Box -->
+                        <div id="unified-chat-history" class="flex-1 overflow-y-auto my-3 space-y-2.5 p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs">
+                            <div class="bg-white p-3 rounded-xl border border-slate-200 text-slate-700 shadow-sm space-y-1">
+                                <span class="font-extrabold text-blue-600 block">🤖 큐브 AI 스튜디오</span>
+                                <p>원하는 게임 아이디어를 말해보세요! (예: "네온 테마의 벽돌깨기 만들어줘")</p>
+                                <p class="text-[11px] text-slate-500 pt-1 border-t border-slate-100">게임이 생성된 후에도 같은 대화창에서 "속도 2배로 해줘", "적 추가해줘"라고 입력하여 계속 수정할 수 있습니다.</p>
+                            </div>
                         </div>
 
-                        <!-- Prompt Preset Badges -->
-                        <div class="space-y-1.5">
-                            <span class="text-[11px] font-medium text-slate-500">💡 추천 아이디어 예시:</span>
+                        <!-- Recommendation Preset Badges -->
+                        <div class="py-2 border-t border-slate-100 space-y-1">
+                            <span class="text-[11px] font-medium text-slate-500">💡 추천 예시 아이디어:</span>
                             <div class="flex flex-wrap gap-1.5">
                                 <button onclick="usePreset('네온 스타일의 네온 블록 깨기 게임, 특수 스킬 아이템 포함')" class="text-[11px] bg-slate-100 hover:bg-blue-50 hover:text-blue-700 border border-slate-200 text-slate-700 px-2.5 py-1 rounded-lg transition">🧱 네온 벽돌깨기</button>
                                 <button onclick="usePreset('중력을 반전시키며 진행하는 2D 픽셀 런너 게임')" class="text-[11px] bg-slate-100 hover:bg-blue-50 hover:text-blue-700 border border-slate-200 text-slate-700 px-2.5 py-1 rounded-lg transition">🏃‍♂️ 중력 반전 런너</button>
@@ -207,24 +215,35 @@
                             </div>
                         </div>
 
-                        <button id="btn-generate" onclick="generateGame()" class="w-full py-3 rounded-xl bg-gradient-to-r from-blue-600 via-red-500 to-yellow-500 hover:from-blue-700 hover:to-red-600 text-white font-extrabold text-sm shadow-md shadow-blue-500/20 transition transform hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-play text-yellow-200"></i>
-                            <span id="btn-generate-text">AI 게임 생성하기</span>
-                        </button>
+                        <!-- Single Input & Action Button -->
+                        <div class="flex gap-2 pt-2 border-t border-slate-100">
+                            <textarea id="prompt-input" rows="2" placeholder="게임 아이디어를 입력하거나, 수정 요청사항을 입력하세요..." class="flex-1 bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:bg-white transition resize-none" onkeydown="if(event.key==='Enter' && !event.shiftKey){ event.preventDefault(); handleUnifiedSubmit(); }"></textarea>
+                            <button id="btn-generate" onclick="handleUnifiedSubmit()" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs shadow-md transition flex flex-col items-center justify-center gap-1 min-w-[90px]">
+                                <i class="fa-solid fa-paper-plane text-yellow-300"></i>
+                                <span id="btn-generate-text">전송</span>
+                            </button>
+                        </div>
+
                     </div>
                 </div>
 
-                <!-- Right Column: Sandbox & Step 2 -->
+                <!-- Right Column: Live Preview Sandbox & Title Controls -->
                 <div class="lg:col-span-7 space-y-5 flex flex-col">
-                    <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm flex flex-col h-[540px]">
+                    <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm flex flex-col h-[560px]">
                         <div class="bg-slate-100 px-4 py-2.5 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2">
+                            <!-- Game Title & Actions: Delete & Reset -->
                             <div class="flex items-center gap-2">
-                                <div class="flex gap-1.5">
-                                    <span class="w-3 h-3 rounded-full bg-red-500 inline-block"></span>
-                                    <span class="w-3 h-3 rounded-full bg-yellow-400 inline-block"></span>
-                                    <span class="w-3 h-3 rounded-full bg-blue-500 inline-block"></span>
-                                </div>
-                                <span class="text-xs font-mono text-slate-700 ml-1 hidden sm:inline" id="preview-status"><i class="fa-solid fa-circle-play text-blue-600 mr-1"></i>샌드박스</span>
+                                <span class="text-xs font-mono font-bold text-slate-800 flex items-center gap-1.5" id="preview-status">
+                                    <i class="fa-solid fa-gamepad text-blue-600"></i>
+                                    <span id="studio-game-title">게임 미생성</span>
+                                </span>
+                                
+                                <button onclick="deleteCurrentGame()" title="현재 생성된 게임 삭제" class="px-2 py-1 bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 rounded-lg text-xs font-bold transition flex items-center gap-1">
+                                    <i class="fa-solid fa-trash-can"></i> 삭제
+                                </button>
+                                <button onclick="resetStudio()" title="대화 및 게임 완전 리셋" class="px-2 py-1 bg-white hover:bg-slate-200 border border-slate-300 text-slate-700 rounded-lg text-xs font-bold transition flex items-center gap-1">
+                                    <i class="fa-solid fa-rotate-right text-blue-600"></i> 리셋
+                                </button>
                             </div>
 
                             <!-- Aspect Ratio Switcher -->
@@ -258,8 +277,8 @@
                                     <i class="fa-solid fa-wand-magic-sparkles text-yellow-500 text-xl absolute inset-0 m-auto w-fit h-fit animate-pulse"></i>
                                 </div>
                                 <div class="text-center space-y-1">
-                                    <h4 id="loading-title" class="text-base font-extrabold text-slate-900">AI가 고해상도 반응형 게임 코드를 작성하고 있습니다...</h4>
-                                    <p id="loading-desc" class="text-xs text-slate-500">게임 로직, 와이드스크린 연출, 물리 엔진을 구현하는 중입니다</p>
+                                    <h4 id="loading-title" class="text-base font-extrabold text-slate-900">AI가 게임 코드를 작성하고 있습니다...</h4>
+                                    <p id="loading-desc" class="text-xs text-slate-500">잠시만 기다려주세요</p>
                                 </div>
                             </div>
 
@@ -267,40 +286,13 @@
                                 <div class="w-16 h-16 rounded-2xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 text-2xl">
                                     <i class="fa-solid fa-gamepad"></i>
                                 </div>
-                                <h3 class="text-base font-bold text-white">고해상도 AI 게임 프리뷰</h3>
-                                <p class="text-xs text-slate-400 max-w-sm mx-auto">16:9 와이드스크린, 모바일 세로형 등 원하는 해상도 비율로 게임을 실시간 테스트할 수 있습니다.</p>
+                                <h3 class="text-base font-bold text-white">미리보기</h3>
+                                <p class="text-xs text-slate-400 max-w-sm mx-auto">좌측 대화창에 메시지를 보내면 여기에 실시간으로 게임이 생성 및 구동됩니다.</p>
                             </div>
 
-                            <!-- Updated Initial Aspect Ratio Class to match 16:9 by default -->
                             <div id="sandbox-aspect-wrapper" class="w-full max-w-4xl aspect-video mx-auto transition-all duration-300 flex items-center justify-center">
                                 <iframe id="game-sandbox" class="w-full h-full border-0 rounded-xl shadow-2xl transition-all duration-300 hidden" sandbox="allow-scripts allow-same-origin"></iframe>
                             </div>
-                        </div>
-                    </div>
-
-                    <!-- Step 2: Refinement -->
-                    <div id="refine-box" class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4 flex-1 flex flex-col opacity-60 pointer-events-none transition-all">
-                        <div class="flex items-center justify-between">
-                            <label class="text-xs font-extrabold uppercase tracking-wider text-red-600 flex items-center gap-1.5">
-                                <i class="fa-solid fa-comments text-blue-600"></i> Step 2. 대화로 게임 계속 수정하기
-                            </label>
-                            <span class="text-[10px] text-slate-400">게임 생성 완료 후 사용 가능</span>
-                        </div>
-
-                        <p class="text-xs text-slate-600">
-                            수정사항을 적어주세요: "플레이어 속도를 2배로 해줘", "적 종류를 추가해줘", "배경을 네온 도시 스타일로 바꿔줘"
-                        </p>
-
-                        <div id="refine-history" class="flex-1 min-h-[100px] max-h-[180px] overflow-y-auto bg-slate-50 border border-slate-200 rounded-xl p-3 space-y-2 text-xs">
-                            <div class="text-slate-400 italic text-center py-3">아직 수정 기록이 없습니다.</div>
-                        </div>
-
-                        <div class="flex gap-2">
-                            <input type="text" id="refine-input" placeholder="수정 및 기능 추가 요청 사항 입력..." class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-red-500 focus:bg-white transition" onkeydown="if(event.key==='Enter') refineGame()">
-                            <button id="btn-refine" onclick="refineGame()" class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-bold text-xs rounded-xl shadow-sm transition flex items-center gap-1.5">
-                                <i class="fa-solid fa-paper-plane"></i>
-                                <span>수정 반영</span>
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -410,34 +402,34 @@
                         </button>
                     </div>
                 </div>
-
-                <!-- SUB TAB 2: Add / Discover Friends -->
-                <div id="fsub-add" class="hidden space-y-5">
-                    <!-- Search User Input -->
-                    <div class="flex gap-2">
-                        <div class="relative flex-1">
-                            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                            <input type="text" id="friend-search-input" placeholder="유저 고유 ID 또는 닉네임으로 검색..." class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-4 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-500 focus:bg-white transition">
-                        </div>
-                        <button onclick="searchUsers()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl transition shadow-sm">
-                            검색
-                        </button>
-                    </div>
-
-                    <!-- Community Recommended Players Grid -->
-                    <div class="space-y-2">
-                        <span class="text-xs font-extrabold text-slate-700 flex items-center gap-1.5">
-                            <i class="fa-solid fa-fire text-red-500"></i> 활동 중인 추천 게이머 목록
-                        </span>
-                        <div id="recommended-users-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                            <!-- Populated dynamically -->
-                        </div>
-                    </div>
-                </div>
+    <!-- MODAL: API KEY MODAL (For External Hosting like GitHub Pages / Google Sites) -->
+    <div id="modal-apikey" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 hidden">
+        <div class="bg-white border border-slate-200 w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4 text-slate-900">
+            <div class="flex items-center justify-between">
+                <h3 class="text-lg font-extrabold text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-key text-amber-500"></i> 구글 Gemini API 키 설정
+                </h3>
+                <button onclick="closeApiKeyModal()" class="text-slate-400 hover:text-slate-700 text-sm">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
             </div>
-        </section>
 
-    </main>
+            <p class="text-xs text-slate-600 leading-relaxed">
+                깃허브(GitHub Pages)나 구글 사이트 등 외부 사이트에서 AI 게임을 생성하려면 구글 Gemini API 키가 필요합니다.
+            </p>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Gemini API Key</label>
+                <input type="password" id="input-api-key" placeholder="AIzaSy..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-blue-500 font-mono">
+                <p class="text-[11px] text-slate-400 mt-1">입력된 키는 브라우저 내부(localStorage)에만 안전하게 저장됩니다.</p>
+            </div>
+
+            <div class="pt-2 flex gap-2">
+                <button onclick="closeApiKeyModal()" class="flex-1 py-2.5 rounded-xl border border-slate-300 text-slate-700 font-semibold text-xs hover:bg-slate-100 transition">취소</button>
+                <button onclick="saveApiKey()" class="flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition shadow-md shadow-blue-600/20">저장 및 적용</button>
+            </div>
+        </div>
+    </div>
 
     <!-- MODAL: EDIT PROFILE MODAL -->
     <div id="modal-edit-profile" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 hidden">
@@ -992,21 +984,55 @@
         }
 
         const GEMINI_MODEL = 'gemini-3-flash-preview';
-        const apiKey = "";
-        const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`;
+        let apiKey = "";
+
+        // API Key local resolution
+        function getEffectiveApiKey() {
+            return localStorage.getItem('cube_gemini_api_key') || apiKey || "";
+        }
+
+        window.openApiKeyModal = function() {
+            document.getElementById('input-api-key').value = getEffectiveApiKey();
+            document.getElementById('modal-apikey').classList.remove('hidden');
+        };
+
+        window.closeApiKeyModal = function() {
+            document.getElementById('modal-apikey').classList.add('hidden');
+        };
+
+        window.saveApiKey = function() {
+            const val = document.getElementById('input-api-key').value.trim();
+            if (val) {
+                localStorage.setItem('cube_gemini_api_key', val);
+                showToast("API 키가 저장되었습니다!", "success");
+            } else {
+                localStorage.removeItem('cube_gemini_api_key');
+                showToast("API 키가 초기화되었습니다.", "info");
+            }
+            closeApiKeyModal();
+        };
 
         async function callGemini(payload, retries = 3, delay = 1000) {
+            const keyToUse = getEffectiveApiKey();
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${keyToUse}`;
+
             for (let i = 0; i < retries; i++) {
                 try {
-                    const response = await fetch(GEMINI_URL, {
+                    const response = await fetch(url, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(payload)
                     });
-                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    if (!response.ok) {
+                        if (response.status === 400 || response.status === 403 || response.status === 401) {
+                            openApiKeyModal();
+                            throw new Error(`API 키가 없거나 올바르지 않습니다. 상단 'API 키' 메뉴에서 구글 Gemini API Key를 입력해 주세요. (HTTP ${response.status})`);
+                        }
+                        throw new Error(`HTTP ${response.status}`);
+                    }
                     return await response.json();
                 } catch (err) {
-                    if (i === retries - 1) throw err;
+                    if (err.message.includes('API 키가 없거나') || i === retries - 1) throw err;
                     await new Promise(res => setTimeout(res, delay * Math.pow(2, i)));
                 }
             }
@@ -1015,7 +1041,7 @@
         window.enrichPrompt = async function() {
             const rawPrompt = document.getElementById('prompt-input').value.trim();
             if (!rawPrompt) {
-                showToast("아이디어를 먼저 간단하게 적어주세요!", "error");
+                showToast("아이디어를 먼저 입력창에 적어주세요!", "error");
                 return;
             }
 
@@ -1039,28 +1065,42 @@
                     showToast("AI가 게임 아이디어를 디테일하게 보강했습니다!", "success");
                 }
             } catch (err) {
-                showToast("아이디어 보강 중 오류가 발생했습니다.", "error");
+                showToast(err.message || "아이디어 보강 중 오류가 발생했습니다.", "error");
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = origText;
             }
         };
 
-        window.generateGame = async function() {
-            const promptText = document.getElementById('prompt-input').value.trim();
-            if (!promptText) {
-                showToast("게임 생성 프롬프트를 입력해주세요!", "error");
+        // Unified Chat & Submission Handler (Generation or Modification)
+        window.handleUnifiedSubmit = async function() {
+            const inputText = document.getElementById('prompt-input').value.trim();
+            if (!inputText) {
+                showToast("요청할 내용을 입력해 주세요!", "error");
                 return;
             }
 
+            document.getElementById('prompt-input').value = '';
+
+            // If no game is created yet -> Generate
+            if (!currentGeneratedHtml) {
+                await generateGameFromPrompt(inputText);
+            } else {
+                // If game already exists -> Refine
+                await refineGameFromPrompt(inputText);
+            }
+        };
+
+        async function generateGameFromPrompt(promptText) {
             currentPrompt = promptText;
-            showStudioLoading(true, "AI가 고해상도 와이드 반응형 게임 코드를 작성하고 있습니다...", "와이드스크린 비주얼 및 스마트 자동 리사이징 연출 중");
+            appendChatLog('user', promptText);
+            showStudioLoading(true, "AI가 게임 코드를 생성하고 있습니다...", `요청: "${promptText.slice(0, 30)}..."`);
 
             const systemInstruction = `You are an expert HTML5 / Canvas Game Developer. Generate a COMPLETE, HIGH-QUALITY, FULLY RESPONSIVE HTML game.
 RULES:
 1. Output ONLY executable HTML starting with <!DOCTYPE html>.
-2. Styling: Use CSS full-viewport responsive layout (e.g. html, body, canvas { width: 100vw; height: 100vh; margin:0; padding:0; overflow:hidden; }).
-3. Canvas Sizing: Ensure canvas resizes dynamically (e.g. function resize(){ canvas.width = window.innerWidth; canvas.height = window.innerHeight; } window.addEventListener('resize', resize);).
+2. Styling: Use CSS full-viewport responsive layout (html, body, canvas { width: 100vw; height: 100vh; margin:0; padding:0; overflow:hidden; }).
+3. Canvas Sizing: Ensure canvas resizes dynamically (function resize(){ canvas.width = window.innerWidth; canvas.height = window.innerHeight; } window.addEventListener('resize', resize);).
 4. Controls: Support both Desktop keyboard/mouse AND Mobile Touch controls.
 5. Visuals: Make game elements visually impressive (gradients, score UI, game over overlays).
 6. Never call alert(). Use custom in-game UI.`;
@@ -1077,88 +1117,25 @@ RULES:
 
                 currentGeneratedHtml = rawCode;
                 updateSandbox(currentGeneratedHtml);
-                enableRefineUI(true);
 
-                refineHistoryLog = [{ role: 'system', text: `최초 와이드 반응형 게임 생성 완료: "${promptText.slice(0, 30)}..."` }];
-                renderRefineHistory();
+                appendChatLog('ai', "게임이 생성되었습니다! 화면 오른쪽 미리보기에서 바로 테스트하시고, 추가 수정할 부분이 있다면 입력창에 입력해 주세요.");
+                document.getElementById('studio-game-title').innerText = promptText.slice(0, 15) + (promptText.length > 15 ? '...' : '');
+                document.getElementById('btn-generate-text').innerText = "수정 반영";
 
-                showToast("16:9 와이드 반응형 게임이 생성되었습니다!", "success");
+                showToast("게임 생성이 완료되었습니다!", "success");
             } catch (err) {
-                showToast("게임 생성 실패. 다시 시도해 주세요.", "error");
+                showToast(err.message || "게임 생성 실패. 다시 시도해 주세요.", "error");
             } finally {
                 showStudioLoading(false);
             }
-        };
+        }
 
-        // Aspect Ratio Switcher Logic
-        window.setSandboxRatio = function(ratio) {
-            const wrapper = document.getElementById('sandbox-aspect-wrapper');
-            const buttons = ['16-9', '4-3', '9-16', 'full'];
+        async function refineGameFromPrompt(refineText) {
+            appendChatLog('user', refineText);
+            showStudioLoading(true, "AI가 게임을 수정하는 중입니다...", `수정 요청: "${refineText}"`);
 
-            buttons.forEach(b => {
-                const btn = document.getElementById(`ratio-${b}`);
-                if (btn) btn.className = "px-2 py-0.5 rounded text-slate-600 hover:text-slate-900 transition";
-            });
-
-            const activeBtn = document.getElementById(`ratio-${ratio.replace(':', '-')}`);
-            if (activeBtn) activeBtn.className = "px-2 py-0.5 rounded bg-white text-blue-600 shadow-sm transition";
-
-            if (ratio === '16:9') {
-                wrapper.className = "w-full max-w-4xl aspect-video mx-auto transition-all duration-300 flex items-center justify-center";
-            } else if (ratio === '4:3') {
-                wrapper.className = "w-full max-w-2xl aspect-[4/3] mx-auto transition-all duration-300 flex items-center justify-center";
-            } else if (ratio === '9:16') {
-                wrapper.className = "h-full aspect-[9/16] mx-auto transition-all duration-300 flex items-center justify-center";
-            } else { // full
-                wrapper.className = "w-full h-full transition-all duration-300 flex items-center justify-center";
-            }
-        };
-
-        window.setPlayerRatio = function(ratio) {
-            const wrapper = document.getElementById('player-aspect-box');
-            const buttons = ['16-9', '4-3', '9-16', 'full'];
-
-            buttons.forEach(b => {
-                const btn = document.getElementById(`pratio-${b}`);
-                if (btn) btn.className = "px-2 py-0.5 rounded text-slate-600 hover:text-slate-900 transition";
-            });
-
-            const activeBtn = document.getElementById(`pratio-${ratio.replace(':', '-')}`);
-            if (activeBtn) activeBtn.className = "px-2 py-0.5 rounded bg-white text-blue-600 shadow-sm transition";
-
-            if (ratio === '16:9') {
-                wrapper.className = "w-full max-w-5xl aspect-video mx-auto transition-all duration-300 flex items-center justify-center";
-            } else if (ratio === '4:3') {
-                wrapper.className = "w-full max-w-3xl aspect-[4/3] mx-auto transition-all duration-300 flex items-center justify-center";
-            } else if (ratio === '9:16') {
-                wrapper.className = "h-full aspect-[9/16] mx-auto transition-all duration-300 flex items-center justify-center";
-            } else { // full
-                wrapper.className = "w-full h-full transition-all duration-300 flex items-center justify-center";
-            }
-        };
-
-        window.toggleFullscreen = function(elementId) {
-            const elem = document.getElementById(elementId);
-            if (!elem) return;
-
-            if (!document.fullscreenElement) {
-                if (elem.requestFullscreen) elem.requestFullscreen();
-                else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
-            } else {
-                if (document.exitFullscreen) document.exitFullscreen();
-            }
-        };
-
-        window.refineGame = async function() {
-            const refineText = document.getElementById('refine-input').value.trim();
-            if (!refineText || !currentGeneratedHtml) return;
-
-            document.getElementById('refine-input').value = '';
-            showStudioLoading(true, "수정 사항을 적용하고 있습니다...", `요청: "${refineText}"`);
-
-            const systemInstruction = `You are modifying an existing HTML game. Apply user refinement request cleanly. Return ONLY executable HTML.`;
-
-            const userContent = `[CURRENT_HTML]: ${currentGeneratedHtml}\n[REQUEST]: ${refineText}`;
+            const systemInstruction = `You are modifying an existing HTML game. Apply user refinement request cleanly. Return ONLY executable HTML starting with <!DOCTYPE html>.`;
+            const userContent = `[CURRENT_HTML]: ${currentGeneratedHtml}\n[REFINEMENT_REQUEST]: ${refineText}`;
 
             const payload = {
                 contents: [{ parts: [{ text: userContent }] }],
@@ -1173,15 +1150,66 @@ RULES:
                 currentGeneratedHtml = updatedCode;
                 updateSandbox(currentGeneratedHtml);
 
-                refineHistoryLog.push({ role: 'user', text: refineText });
-                renderRefineHistory();
-
-                showToast("게임 수정이 완료되었습니다!", "success");
+                appendChatLog('ai', `"${refineText}" 수정이 반영되었습니다! 화면에서 확인해 보세요.`);
+                showToast("수정이 완료되었습니다!", "success");
             } catch (err) {
-                showToast("수정 도중 오류가 발생했습니다.", "error");
+                showToast(err.message || "수정 중 오류가 발생했습니다.", "error");
             } finally {
                 showStudioLoading(false);
             }
+        }
+
+        function appendChatLog(role, text) {
+            const container = document.getElementById('unified-chat-history');
+            const msgDiv = document.createElement('div');
+            
+            if (role === 'user') {
+                msgDiv.className = "bg-blue-600 text-white p-2.5 rounded-xl ml-6 shadow-sm";
+                msgDiv.innerHTML = `<span class="font-bold text-[10px] text-blue-200 block mb-0.5">👤 사용자</span><div>${escapeHtml(text)}</div>`;
+            } else {
+                msgDiv.className = "bg-white border border-slate-200 text-slate-800 p-2.5 rounded-xl mr-6 shadow-sm";
+                msgDiv.innerHTML = `<span class="font-bold text-[10px] text-amber-600 block mb-0.5">🤖 큐브 AI</span><div>${escapeHtml(text)}</div>`;
+            }
+
+            container.appendChild(msgDiv);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        window.deleteCurrentGame = function() {
+            if (!currentGeneratedHtml) {
+                showToast("삭제할 생성된 게임이 없습니다.", "info");
+                return;
+            }
+            currentGeneratedHtml = '';
+            document.getElementById('game-sandbox').classList.add('hidden');
+            document.getElementById('game-sandbox').srcdoc = '';
+            document.getElementById('preview-placeholder').classList.remove('hidden');
+            document.getElementById('btn-publish-open').disabled = true;
+            document.getElementById('studio-game-title').innerText = "게임 미생성";
+            document.getElementById('btn-generate-text').innerText = "전송";
+            appendChatLog('ai', "생성된 게임이 삭제되었습니다. 새로운 게임 아이디어를 입력하세요!");
+            showToast("게임이 삭제되었습니다.", "info");
+        };
+
+        window.resetStudio = function() {
+            currentGeneratedHtml = '';
+            currentPrompt = '';
+            document.getElementById('prompt-input').value = '';
+            document.getElementById('game-sandbox').classList.add('hidden');
+            document.getElementById('game-sandbox').srcdoc = '';
+            document.getElementById('preview-placeholder').classList.remove('hidden');
+            document.getElementById('btn-publish-open').disabled = true;
+            document.getElementById('studio-game-title').innerText = "게임 미생성";
+            document.getElementById('btn-generate-text').innerText = "전송";
+
+            const chatContainer = document.getElementById('unified-chat-history');
+            chatContainer.innerHTML = `
+                <div class="bg-white p-3 rounded-xl border border-slate-200 text-slate-700 shadow-sm space-y-1">
+                    <span class="font-extrabold text-blue-600 block">🤖 큐브 AI 스튜디오</span>
+                    <p>원하는 게임 아이디어를 말해보세요!</p>
+                </div>
+            `;
+            showToast("스튜디오 대화 및 게임이 초기화되었습니다.", "info");
         };
 
         function cleanCodeOutput(code) {
